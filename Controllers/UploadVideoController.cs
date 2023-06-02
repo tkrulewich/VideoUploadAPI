@@ -1,22 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace TkrulVideoUpload.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Policy = "VideoScope")]
+[Authorize]
 public class UploadVideoController : ControllerBase
 {
     private readonly ILogger<UploadVideoController> _logger;
-    private readonly IConfiguration _configuration;
     private readonly IBlobService _blobService;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly ApplicationDbContext _context;
 
-    public UploadVideoController(ILogger<UploadVideoController> logger, IConfiguration configuration, IBlobService blobService)
+    public UploadVideoController(
+        ILogger<UploadVideoController> logger,
+        IBlobService blobService,
+        UserManager<IdentityUser> userManager,
+        ApplicationDbContext context)
     {
         _logger = logger;
-        _configuration = configuration;
         _blobService = blobService;
+        _userManager = userManager;
+        _context = context;
     }
 
     [HttpPost]
@@ -31,13 +38,29 @@ public class UploadVideoController : ControllerBase
         var contentType = file.ContentType;
         var blob = await _blobService.UploadFileBlobAsync(file.OpenReadStream(), fileName, contentType);
 
+        var videoRecord = new Models.Entities.Video
+        {
+            Url = blob,
+            UploaderUserId = _userManager.GetUserId(User),
+            UploadedDate = DateTime.UtcNow
+        };
+
+        using (var scope = _context.Database.BeginTransaction())
+        {
+            await _context.Videos.AddAsync(videoRecord);
+            await _context.SaveChangesAsync();
+            scope.Commit();
+        }
+
         return Ok(blob);
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult Get()
     {
-        return Ok("Hello from UploadVideoController");
+        var username = User.Identity.Name;
+        return Ok($"Hello {username} from UploadVideoController");
     }
 
 }
