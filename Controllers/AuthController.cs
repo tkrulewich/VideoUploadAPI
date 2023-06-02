@@ -1,7 +1,9 @@
+namespace TkrulVideoUpload.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-namespace TkrulVideoUpload.Controllers;
+using TkrulVideoUpload.Models.DTOs;
 
 [ApiController]
 [Route("auth")]
@@ -33,12 +35,4 @@ public class AuthController : ControllerBase
         await _signInManager.SignOutAsync();
         return Ok();
     }
-
-    public class LoginDto
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-
 }
