@@ -5,7 +5,7 @@ using TkrulVideoUpload.Models.Entities;
 public class ApplicationDbContext : IdentityDbContext
 {
 
-    public DbSet<Video> Videos { get; set; }
+    public virtual DbSet<Video> Videos { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

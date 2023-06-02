@@ -45,13 +45,10 @@ public class VideoController : ControllerBase
             UploadedDate = DateTime.UtcNow
         };
 
-        using (var scope = _context.Database.BeginTransaction())
-        {
-            await _context.Videos.AddAsync(videoRecord);
-            await _context.SaveChangesAsync();
-            scope.Commit();
-        }
-
+        await _context.Videos.AddAsync(videoRecord);
+        await _context.SaveChangesAsync();
+        
+        
         var uniqueId = videoRecord.Id.ToString();
 
         return Ok(uniqueId);
