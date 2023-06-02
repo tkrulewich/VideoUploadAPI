@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.Identity;
 [ApiController]
 [Route("[controller]")]
 [Authorize]
-public class UploadVideoController : ControllerBase
+public class VideoController : ControllerBase
 {
-    private readonly ILogger<UploadVideoController> _logger;
+    private readonly ILogger<VideoController> _logger;
     private readonly IBlobService _blobService;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ApplicationDbContext _context;
 
-    public UploadVideoController(
-        ILogger<UploadVideoController> logger,
+    public VideoController(
+        ILogger<VideoController> logger,
         IBlobService blobService,
         UserManager<IdentityUser> userManager,
         ApplicationDbContext context)
@@ -26,8 +26,8 @@ public class UploadVideoController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> UploadVideo(IFormFile file)
+    [HttpPost("upload")]
+    public async Task<IActionResult> Upload(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
@@ -52,15 +52,34 @@ public class UploadVideoController : ControllerBase
             scope.Commit();
         }
 
-        return Ok(blob);
+        var uniqueId = videoRecord.Id.ToString();
+
+        return Ok(uniqueId);
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var video = await _context.Videos.FindAsync(id);
+
+        if (video == null)
+        {
+            return NotFound();
+        }
+
+        var stream = await _blobService.GetBlobDataAsync(video.Url);
+
+        return Ok(stream);
+    }
+
+    [HttpGet("greeting")]
     [Authorize]
     public IActionResult Get()
     {
         var username = User.Identity.Name;
         return Ok($"Hello {username} from UploadVideoController");
     }
+
+
 
 }

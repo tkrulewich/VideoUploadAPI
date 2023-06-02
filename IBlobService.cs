@@ -28,7 +28,7 @@ public class BlobService : IBlobService
 
         await blobClient.UploadAsync(content, new BlobHttpHeaders { ContentType = contentType });
 
-        return blobClient.Uri.ToString();
+        return blobClient.Name;
     }
 
     public async Task DeleteBlobDataAsync(string fileName)
