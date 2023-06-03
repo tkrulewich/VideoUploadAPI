@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
 public class VideoController : ControllerBase
 {
     private readonly ILogger<VideoController> _logger;
@@ -27,6 +26,7 @@ public class VideoController : ControllerBase
     }
 
     [HttpPost("upload")]
+    [Authorize]
     public async Task<IActionResult> Upload(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -70,10 +70,9 @@ public class VideoController : ControllerBase
     }
 
     [HttpGet("greeting")]
-    [Authorize]
     public IActionResult Get()
     {
-        var username = User.Identity.Name;
+        var username = User?.Identity?.Name ?? "Anonymous";
         return Ok($"Hello {username} from UploadVideoController");
     }
 
