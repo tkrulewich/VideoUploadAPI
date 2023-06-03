@@ -20,11 +20,11 @@ using System.Security.Claims;
 
 public class VideoControllerTests
 {
-    private Mock<ILogger<VideoController>> _mockLogger;
-    private Mock<IBlobService> _mockBlobService;
-    private Mock<UserManager<IdentityUser>> _mockUserManager;
-    private ApplicationDbContext _dbContext;
-    private VideoController _controller;
+    private Mock<ILogger<VideoController>> _mockLogger = null!;
+    private Mock<IBlobService> _mockBlobService = null!;
+    private Mock<UserManager<IdentityUser>> _mockUserManager = null!;
+    private ApplicationDbContext _dbContext = null!;
+    private VideoController _controller = null!;
 
     private List<Video> videos = new List<Video>
     {
@@ -152,13 +152,20 @@ public class VideoControllerTests
         var result = await _controller.Upload(fileMock.Object);
         Assert.IsInstanceOf<OkObjectResult>(result);
 
-        var video_id = (result as OkObjectResult).Value.ToString();
+        var video_id = (result as OkObjectResult)?.Value?.ToString();
 
-        var video = await _controller.Get(
-            Guid.Parse(video_id)
-        );
+        if (video_id == null)
+        {
+            Assert.Fail("Video id is null");
+        } else 
+        {
+            var video = await _controller.Get(
+                Guid.Parse(video_id)
+            );
+            
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(video);
 
-        // Assert
-        Assert.IsInstanceOf<OkObjectResult>(video);
+        }
     }
 }
