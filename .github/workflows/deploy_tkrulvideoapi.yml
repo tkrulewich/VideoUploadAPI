@@ -14,6 +14,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Change directory
+      run: cd TkrulVideoUpload
+      
       - uses: actions/checkout@v2
 
       - name: Set up .NET Core
@@ -42,6 +45,9 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: Change directory
+      run: cd TkrulVideoUpload
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
