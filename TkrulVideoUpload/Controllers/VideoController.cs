@@ -73,7 +73,7 @@ public class VideoController : ControllerBase
     public IActionResult Get()
     {
         var username = User?.Identity?.Name ?? "Anonymous";
-        return Ok($"Hello {username} from UploadVideoController");
+        return Ok($"Hello {username} from VideoController");
     }
 
 
