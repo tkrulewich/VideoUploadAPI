@@ -20,11 +20,11 @@ using System.Security.Claims;
 
 public class VideoControllerTests
 {
-    private Mock<ILogger<VideoController>> _mockLogger = null!;
+    private Mock<ILogger<VideosController>> _mockLogger = null!;
     private Mock<IBlobService> _mockBlobService = null!;
     private Mock<UserManager<IdentityUser>> _mockUserManager = null!;
     private ApplicationDbContext _dbContext = null!;
-    private VideoController _controller = null!;
+    private VideosController _controller = null!;
 
 
     private List<Video> videos = new List<Video>
@@ -41,7 +41,7 @@ public class VideoControllerTests
     [SetUp]
     public void Setup()
     {
-        _mockLogger = new Mock<ILogger<VideoController>>();
+        _mockLogger = new Mock<ILogger<VideosController>>();
         _mockBlobService = new Mock<IBlobService>();
         _mockUserManager = new Mock<UserManager<IdentityUser>>(Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null);
         
