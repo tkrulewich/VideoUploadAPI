@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TkrulVideoUpload\TkrulVideoUpload.csproj" />
+    <ProjectReference Include="..\VideoAPI\VideoAPI.csproj" />
   </ItemGroup>
 
 </Project>

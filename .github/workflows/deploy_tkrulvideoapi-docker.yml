@@ -31,8 +31,8 @@ jobs:
       with:
         push: true
         tags: tkrulvideocontainers.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_855f2eedcde54de8b5a10f39e5edb24b }}/tkrulvideoupload:${{ github.sha }}
-        context: ./TkrulVideoUpload # Add this line if there is a need to change the build context
-        file: ./TkrulVideoUpload/Dockerfile # Adjust this line
+        context: ./VideoAPI # Add this line if there is a need to change the build context
+        file: ./VideoAPI/Dockerfile # Adjust this line
 
   deploy:
     runs-on: ubuntu-latest
