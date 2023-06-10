@@ -240,7 +240,7 @@ namespace TkrulVideoUpload.Migrations
 
                     b.HasIndex("UploaderUserId");
 
-                    b.ToTable("Videos");
+                    b.ToTable("Videos", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
