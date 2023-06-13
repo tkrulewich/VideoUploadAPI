@@ -3,6 +3,7 @@ namespace TkrulVideoUpload.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]
@@ -64,9 +65,43 @@ public class VideosController : ControllerBase
             return NotFound();
         }
 
+        var accessLog = new Models.Entities.VideoAccessLog
+        {
+            VideoId = id,
+            UserId = _userManager.GetUserId(User),
+            AccessDate = DateTime.UtcNow
+        };
+
+        await _context.VideoAccessLogs.AddAsync(accessLog);
+        await _context.SaveChangesAsync();
+
         var stream = await _blobService.GetBlobDataAsync(video.Url);
 
         return Ok(stream);
+    }
+
+    [HttpGet("{id:guid}/logs")]
+    public async Task<IActionResult> GetLogs(Guid id)
+    {
+        var video = await _context.Videos
+            .Include(v => v.AccessLogs)
+            .ThenInclude(log => log.User)
+            .FirstOrDefaultAsync(v => v.Id == id);
+
+        if (video == null)
+        {
+            return NotFound();
+        }
+
+        var logs = video.AccessLogs
+            .Select(log => new
+            {
+                log.AccessDate,
+                log.User.UserName
+            })
+            .ToList();
+        
+        return Ok(logs);
     }
 
     [HttpGet("greeting")]

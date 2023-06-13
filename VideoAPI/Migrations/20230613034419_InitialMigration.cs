@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TkrulVideoUpload.Migrations
+namespace VideoAPI.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -174,6 +174,34 @@ namespace TkrulVideoUpload.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "VideoAccessLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VideoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AccessDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AccessType = table.Column<int>(type: "int", nullable: false),
+                    VideoId2 = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VideoAccessLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VideoAccessLogs_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VideoAccessLogs_Videos_VideoId",
+                        column: x => x.VideoId,
+                        principalTable: "Videos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -214,6 +242,16 @@ namespace TkrulVideoUpload.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VideoAccessLogs_UserId",
+                table: "VideoAccessLogs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VideoAccessLogs_VideoId",
+                table: "VideoAccessLogs",
+                column: "VideoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Videos_UploaderUserId",
                 table: "Videos",
                 column: "UploaderUserId");
@@ -237,10 +275,13 @@ namespace TkrulVideoUpload.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Videos");
+                name: "VideoAccessLogs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Videos");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
