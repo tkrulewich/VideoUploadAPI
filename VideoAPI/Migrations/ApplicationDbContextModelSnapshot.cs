@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TkrulVideoUpload.Migrations
+namespace VideoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -240,7 +240,38 @@ namespace TkrulVideoUpload.Migrations
 
                     b.HasIndex("UploaderUserId");
 
-                    b.ToTable("Videos", (string)null);
+                    b.ToTable("Videos");
+                });
+
+            modelBuilder.Entity("TkrulVideoUpload.Models.Entities.VideoAccessLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AccessDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AccessType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("VideoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VideoId2")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("VideoAccessLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -303,6 +334,30 @@ namespace TkrulVideoUpload.Migrations
                         .IsRequired();
 
                     b.Navigation("UploaderUser");
+                });
+
+            modelBuilder.Entity("TkrulVideoUpload.Models.Entities.VideoAccessLog", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TkrulVideoUpload.Models.Entities.Video", "Video")
+                        .WithMany("AccessLogs")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("TkrulVideoUpload.Models.Entities.Video", b =>
+                {
+                    b.Navigation("AccessLogs");
                 });
 #pragma warning restore 612, 618
         }
