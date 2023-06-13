@@ -29,6 +29,7 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
+        context: ./VideoAPI  # Specify the path to the Dockerfile
         push: true
         tags: tkkilsarcontainerreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_189f13fcc6ef4a2bb7d90740d68e9e05 }}/videoapi:${{ github.sha }}
         file: ./Dockerfile
